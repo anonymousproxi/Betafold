@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.1.2/build/pdbe-molstar-light.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pdbe-molstar@3.1.2/build/pdbe-molstar-plugin.js"></script>
+  <style>
+    * { margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background-color: #0b0f19; }
+    #viewer { width: 100%; height: 100%; position: relative; }
+  </style>
+</head>
+<body>
+  <div id="viewer"></div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const pdbId = urlParams.get('pdb');
+    
+    if (pdbId) {
+      // Extremely robust wait-loop in case the CDN is slow to load
+      const wait = setInterval(() => {
+        if (window.PDBeMolstarPlugin) {
+            clearInterval(wait);
+            const viewerInstance = new window.PDBeMolstarPlugin();
+            const options = {
+              moleculeId: pdbId.toLowerCase(),
+              hideControls: true, 
+              hideExpandIcon: true
+            };
+            viewerInstance.render(document.getElementById('viewer'), options);
+        }
+      }, 100);
+    }
+  </script>
+</body>
+</html>
