@@ -13,4 +13,3 @@ redis
 resend
 requests
 biopython
-google-generativeai

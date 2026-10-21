@@ -9,7 +9,10 @@ from worker import run_analysis
 import uuid, json
 from datetime import datetime
 import os
-import google.generativeai as genai
+import requests
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral")
 
 app = FastAPI(title="BetaFold API", version="1.0.0")
 
@@ -97,21 +100,18 @@ def chat_with_ai(req: ChatRequest, current_user=Depends(get_current_user)):
     Answer the user's question clearly and concisely. Reference the structural metadata where relevant.
     """
     
-    from dotenv import load_dotenv
-    load_dotenv(override=True)
-    
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-    if GEMINI_API_KEY:
-        try:
-            genai.configure(api_key=GEMINI_API_KEY)
-            model = genai.GenerativeModel('gemini-2.5-flash')
-            response = model.generate_content(prompt)
-            return {"reply": response.text}
-        except Exception as e:
-            return {"reply": f"Gemini API Error: {str(e)}"}
-    else:
+    try:
+        r = requests.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
+            timeout=120,
+        )
+        r.raise_for_status()
+        return {"reply": r.json().get("response", "")}
+    except requests.RequestException as e:
         return {
-            "reply": "BetaFold AI is currently in simulation mode (No `GEMINI_API_KEY` provided). Keep in mind that a hydrophobic core usually dictates rapid folding! Add your Gemini API key to `.env` to enable live conversational intelligence."
+            "reply": f"BetaFold AI is offline: could not reach Ollama at {OLLAMA_BASE_URL} "
+                     f"(model '{OLLAMA_MODEL}'). Start it with `ollama serve` and `ollama pull {OLLAMA_MODEL}`. ({e})"
         }
 
 # Fix missing import

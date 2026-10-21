@@ -70,7 +70,7 @@ export default function DocsPage() {
 
               <h2 style={{ color: '#10b981', fontWeight: 700, marginTop: 30, marginBottom: 8 }}>State-of-the-Art Generative Analysis</h2>
               <p style={{ color: 'var(--muted)', marginBottom: 20 }}>
-                Every single structural result triggers a concurrent Google Gemini LLM evaluation payload mapping specific hydrophobic nodes, identifying topological flaws, and extrapolating mutation data in natural language right next to your WebGL model.
+                Every single structural result triggers a concurrent local Mistral (Ollama) LLM evaluation payload mapping specific hydrophobic nodes, identifying topological flaws, and extrapolating mutation data in natural language right next to your WebGL model.
               </p>
 
               <h2 style={{ color: '#06b6d4', fontWeight: 700, marginTop: 30, marginBottom: 8 }}>3D Deep Renderer</h2>
