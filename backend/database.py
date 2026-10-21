@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./betafold.db")
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, **({"connect_args": {"check_same_thread": False}} if DATABASE_URL.startswith("sqlite") else {"pool_size": 10, "max_overflow": 20}))
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -22,7 +22,7 @@ class User(Base):
 class ProteinJob(Base):
     __tablename__ = "protein_jobs"
     job_id = Column(String, primary_key=True)
-    user_id = Column(String)
+    user_id = Column(String, index=True)
     sequence = Column(Text)
     status = Column(String, default="pending")
     analysis = Column(Text, nullable=True)

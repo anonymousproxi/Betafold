@@ -24,11 +24,12 @@ def send_completion_email(user_email: str, job_id: str, protein_name: str):
             "from": "BetaFold <onboarding@resend.dev>",
             "to": [user_email],
             "subject": f"BetaFold Analysis Complete: {protein_name}",
-            "html": f"<p>Your automated protein analysis for job <strong>{job_id}</strong> is complete!</p><p>Result matched: {protein_name}</p><p><a href='http://localhost:3000/results/{job_id}'>Click here to view your 3D structure and AI insights.</a></p>"
+            "html": f"<p>Your automated protein analysis for job <strong>{job_id}</strong> is complete!</p><p>Result matched: {protein_name}</p><p><a href='{FRONTEND_URL}/results/{job_id}'>Click here to view your 3D structure and AI insights.</a></p>"
         })
     except Exception as e:
         print(f"Failed to send email: {e}")
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 celery_app = Celery(

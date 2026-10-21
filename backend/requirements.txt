@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+gunicorn
+sqlalchemy
+psycopg2-binary
+pydantic
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt<4.1
+celery[redis]
+redis
+resend
+requests
+biopython
+google-generativeai
